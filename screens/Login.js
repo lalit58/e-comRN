@@ -9,14 +9,23 @@ import {
 } from "../styles/styles";
 import { Button, TextInput } from "react-native-paper";
 import Footer from "../components/Footer";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../redux/actions/userActions";
+import Toast from "react-native-toast-message";
+import { useEffect } from "react";
+import { useMessageAndErrorUser } from "../utils/hooks";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const loading = false;
+  const dispatch = useDispatch();
+  const loading = useMessageAndErrorUser(navigation, dispatch, "profile");
+
+  // console.log(isAuthenticated);
+
   const submitHandler = () => {
-    alert("hh jmjfbnj");
+    dispatch(login(email, password));
   };
   return (
     <>

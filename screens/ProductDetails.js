@@ -40,13 +40,9 @@ const ProductDetails = ({ route: { params } }) => {
 
   const images = [
     {
-      id: 12255,
       url: "https://upload.wikimedia.org/wikipedia/commons/b/bb/Gorgosaurus_BW_transparent.png",
     },
-    {
-      id: 12256,
-      url: "https://picsum.photos/seed/picsum/200/300",
-    },
+    { url: "https://picsum.photos/seed/picsum/200/300" },
   ];
 
   const incrementQty = () => {
@@ -80,18 +76,20 @@ const ProductDetails = ({ route: { params } }) => {
     >
       <Header back={true} />
       {/* carousel */}
-      {/* <Carousel
+      <Carousel
         layout="stack"
         sliderWidth={SLIDER_WIDTH}
         itemWidth={ITEM_WIDTH}
         ref={isCarousel}
-        data={images}
+        data={""}
         renderItem={CarouselCardItem}
-      /> */}
-      <Image
-        source={{
-          uri: "https://m.media-amazon.com/images/I/31YH5wvKCfL._SL500_.jpg",
-        }}
+      />
+      {/* <Image
+        source={
+          {
+            // uri: "https://m.media-amazon.com/images/I/31YH5wvKCfL._SL500_.jpg",
+          }
+        }
         style={{
           width: "100%",
           height: 200,
@@ -100,7 +98,7 @@ const ProductDetails = ({ route: { params } }) => {
           justifyContent: "center",
           top: 80,
         }}
-      />
+      /> */}
       <View
         style={{
           backgroundColor: colors.color2,

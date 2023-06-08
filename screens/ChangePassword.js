@@ -10,14 +10,21 @@ import {
 import { Button, TextInput } from "react-native-paper";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import { useDispatch } from "react-redux";
+import { updatePassword } from "../redux/actions/otherActions";
+import { useMessageAndErrorOther } from "../utils/hooks";
 
 const ChangePassword = ({ navigation }) => {
-  const [OldPassword, setOldPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  const loading = false;
+  const dispatch = useDispatch();
+  const loading = useMessageAndErrorOther(dispatch);
+
   const submitHandler = () => {
-    alert("Password Change Haba");
+    dispatch(updatePassword(oldPassword, newPassword));
+    setOldPassword("");
+    setNewPassword("");
   };
   return (
     <View style={{ ...defaultStyle, backgroundColor: colors.color2 }}>
@@ -31,7 +38,7 @@ const ChangePassword = ({ navigation }) => {
           {...inputOptions}
           placeholder="Old Password"
           secureTextEntry={true}
-          value={OldPassword}
+          value={oldPassword}
           onChangeText={setOldPassword}
         />
         <TextInput
@@ -45,7 +52,7 @@ const ChangePassword = ({ navigation }) => {
         <Button
           loading={loading}
           textColor={colors.color2}
-          disabled={newPassword === "" || OldPassword === ""}
+          disabled={newPassword === "" || oldPassword === ""}
           style={styles.btn}
           onPress={submitHandler}
         >

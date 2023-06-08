@@ -1,21 +1,34 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { defaultStyle, colors, formHeading } from "../styles/styles";
+import {
+  defaultStyle,
+  colors,
+  formHeading,
+  defaultImg,
+} from "../styles/styles";
 import { Avatar, Button } from "react-native-paper";
 import ButtonBox from "../components/ButtonBox";
 import Footer from "../components/Footer";
 import Loader from "../components/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import { loadUser, logout } from "../redux/actions/userActions";
+import { useMessageAndErrorUser } from "../utils/hooks";
+import { useIsFocused } from "@react-navigation/native";
 
-const user = { name: "Lalit", email: "lalit@gmail.com" };
-
-const loading = false;
+// const user = { name: "Lalit", email: "lalit@gmail.com" };
 
 const Profile = ({ navigation, route }) => {
-  const [avatar, setAvatar] = useState(null);
+  const { user } = useSelector((state) => state.user);
+  const [avatar, setAvatar] = useState(
+    user?.avatar ? user.avatar.url : defaultImg
+  );
 
+  const dispatch = useDispatch();
+  const isFocused = useIsFocused();
+
+  const loading = useMessageAndErrorUser(navigation, dispatch, "login");
   const logoutHandler = () => {
-    console.log("Signing Out");
-    // navigation.navigate("login");
+    dispatch(logout());
   };
 
   const navigateHandler = (text) => {
@@ -48,7 +61,8 @@ const Profile = ({ navigation, route }) => {
       setAvatar(route.params.image);
       // DIspatch update picture here
     }
-  }, [route.params]);
+    dispatch(loadUser());
+  }, [route.params, dispatch, isFocused]);
   return (
     <>
       <View style={defaultStyle}>
@@ -101,12 +115,14 @@ const Profile = ({ navigation, route }) => {
                 text={"Orders"}
                 icon={"format-list-bulleted-square"}
               />
-              <ButtonBox
-                handler={navigateHandler}
-                icon={"view-dashboard"}
-                text={"Admin"}
-                reverse={true}
-              />
+              {user?.role === "admin" && (
+                <ButtonBox
+                  handler={navigateHandler}
+                  icon={"view-dashboard"}
+                  text={"Admin"}
+                  reverse={true}
+                />
+              )}
               <ButtonBox
                 handler={navigateHandler}
                 text={"Profile"}

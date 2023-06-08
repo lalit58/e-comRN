@@ -9,30 +9,36 @@ import {
 } from "../styles/styles";
 import { Button, TextInput } from "react-native-paper";
 import Header from "../components/Header";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProfile } from "../redux/actions/otherActions";
+import { useMessageAndErrorOther } from "../utils/hooks";
 
 const UpdateProfile = ({ navigation }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
-  const [pincode, setPincode] = useState("");
+  const { user } = useSelector((state) => state.user);
 
-  const disableBtn =
-    !name || !email || !address || !city || !country || !pincode;
+  const [name, setName] = useState(user?.name);
+  const [email, setEmail] = useState(user?.email);
+  const [address, setAddress] = useState(user?.address);
+  const [city, setCity] = useState(user?.city);
+  const [country, setCountry] = useState(user?.country);
+  const [pinCode, setPinCode] = useState(user?.pinCode.toString());
 
-  const loading = false;
+  const dispatch = useDispatch();
+
+  const loading = useMessageAndErrorOther(dispatch, navigation, "profile");
+
   const submitHandler = () => {
-    alert("Yeah");
-    // will remove this in future
+    dispatch(updateProfile(name, email, address, city, country, pinCode));
   };
   return (
-    <View style={{ ...defaultStyle, backgroundColor: colors.color2 }}>
+    <View style={defaultStyle}>
       <Header back={true} />
+
       {/* Heading */}
       <View style={{ marginBottom: 20, paddingTop: 70 }}>
         <Text style={formHeading}>Edit Profile</Text>
       </View>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{
@@ -49,6 +55,7 @@ const UpdateProfile = ({ navigation }) => {
             value={name}
             onChangeText={setName}
           />
+
           <TextInput
             {...inputOptions}
             placeholder="Email"
@@ -56,6 +63,7 @@ const UpdateProfile = ({ navigation }) => {
             value={email}
             onChangeText={setEmail}
           />
+
           <TextInput
             {...inputOptions}
             placeholder="Address"
@@ -74,17 +82,17 @@ const UpdateProfile = ({ navigation }) => {
             value={country}
             onChangeText={setCountry}
           />
+
           <TextInput
             {...inputOptions}
             placeholder="Pin Code"
-            keyboardType="number-pad"
-            value={pincode}
-            onChangeText={setPincode}
+            value={pinCode}
+            onChangeText={setPinCode}
           />
+
           <Button
             loading={loading}
             textColor={colors.color2}
-            disabled={disableBtn}
             style={styles.btn}
             onPress={submitHandler}
           >

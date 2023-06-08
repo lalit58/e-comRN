@@ -10,6 +10,10 @@ import {
 } from "../styles/styles";
 import { Avatar, Button, TextInput } from "react-native-paper";
 import Footer from "../components/Footer";
+import mime from "mime";
+import { useDispatch } from "react-redux";
+import { register } from "../redux/actions/userActions";
+import { useMessageAndErrorUser } from "../utils/hooks";
 
 const SignUp = ({ navigation, route }) => {
   const [avatar, setAvatar] = useState("");
@@ -19,17 +23,34 @@ const SignUp = ({ navigation, route }) => {
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
-  const [pincode, setPincode] = useState("");
+  const [pinCode, setPincode] = useState("");
 
   const disableBtn =
-    !name || !email || !password || !address || !city || !country || !pincode;
+    !name || !email || !password || !address || !city || !country || !pinCode;
 
-  const loading = false;
+  const dispatch = useDispatch();
   const submitHandler = () => {
-    alert("hh jmjfbnj");
-    // will remove this in future
-    navigation.navigate("verify");
+    const myForm = new FormData();
+
+    myForm.append("name", name);
+    myForm.append("email", email);
+    myForm.append("password", password);
+    myForm.append("address", address);
+    myForm.append("city", city);
+    myForm.append("country", country);
+    myForm.append("pinCode", pinCode);
+
+    if (avatar !== "") {
+      myForm.append("file", {
+        uri: avatar,
+        type: mime.getType(avatar),
+        name: avatar.split("/").pop(),
+      });
+    }
+    dispatch(register(myForm));
   };
+
+  const loading = useMessageAndErrorUser(navigation, dispatch, "profile");
 
   useEffect(() => {
     if (route.params?.image) setAvatar(route.params.image);
@@ -65,7 +86,7 @@ const SignUp = ({ navigation, route }) => {
             <TextInput
               {...inputOptions}
               placeholder="Name"
-              value={email}
+              value={name}
               onChangeText={setName}
             />
             <TextInput
@@ -104,7 +125,7 @@ const SignUp = ({ navigation, route }) => {
               {...inputOptions}
               placeholder="Pin Code"
               keyboardType="number-pad"
-              value={pincode}
+              value={pinCode}
               onChangeText={setPincode}
             />
             <Button
